@@ -4,13 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const convertFactory = require('electron-html-to');
 
-const colors = {
-    red: "red",
-    blue: "blue",
-    green: "green",
-};
-
-
+// Starts the app right away with inquirer, asks a user for a Username and a choic of 3 colors
 inquirer.prompt([
     {
         type: "input",
@@ -28,30 +22,33 @@ inquirer.prompt([
         ]
     }
 ]).then(function (data) {
-    const queryUrl = `http://api.github.com/users/${data.username}`;
-    axios.get(queryUrl)
+    // Set the username to the github api target
+    const queryURL = `http://api.github.com/users/${data.username}`;
+    axios.get(queryURL)
     .then(function (res) {
+        // Create an HTML page using the template below and input the data from the user response
         var html = makeHTML(res.data,  data.color)
-
+        // Use electron to convert to PDF --this part was hard to figure out!!--
         const conversion = convertFactory({
             converterPath: convertFactory.converters.PDF
           });
-           
+        // Convert the html and --very important-- include background colors! 
           conversion({ html: html, pdf: {
             printBackground: true,
           }}, function(err, result) {
             if (err) {
               return console.error(err);
             }
-           
+        
             console.log(result.numberOfPages);
             console.log(result.logs);
+            // Write the pdf with the name of the current directory + resume.pdf
             result.stream.pipe(fs.createWriteStream(path.join(__dirname, "resume.pdf")));
             conversion.kill(); 
           });
     })
 })
-
+// HTML template function, takes in data and a color, uses bootstrap for styles
 function makeHTML(data, color) {
     return `<!DOCTYPE html>
     <html lang="en">
@@ -112,5 +109,3 @@ function makeHTML(data, color) {
     </body>
     </html>`
 }
-
-
