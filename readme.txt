@@ -26,5 +26,5 @@ CSS (bootstrap)
 ​
 Javascript, Node.js
 ​
-#  Direct link to site:
-https://zaydorade.github.io/Dev-Profile-Generator/
+#  Direct link to example file:
+https://github.com/Zaydorade/Dev-Profile-Generator/blob/master/resume.pdf
